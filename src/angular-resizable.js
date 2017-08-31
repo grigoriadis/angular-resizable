@@ -34,11 +34,16 @@ angular.module('angularResizable', [])
                     'msFlexPreferredSize' in document.documentElement.style ? 'msFlexPreferredSize' : 'flexBasis';
 
                 // register watchers on width and height attributes if they are set
-                scope.$watch('rWidth', function(value){
+                var destroyWidthWatcher = scope.$watch('rWidth', function(value){
                     element[0].style[scope.rFlex ? flexBasis : 'width'] = scope.rWidth + 'px';
                 });
-                scope.$watch('rHeight', function(value){
+                var destroyHeightWatcher = scope.$watch('rHeight', function(value){
                     element[0].style[scope.rFlex ? flexBasis : 'height'] = scope.rHeight + 'px';
+                });
+
+                scope.$on("$destroy", function() {
+                    destroyHeightWatcher();
+                    destroyWidthWatcher();
                 });
 
                 element.addClass('resizable');
@@ -157,6 +162,11 @@ angular.module('angularResizable', [])
                     };
                     grabber.addEventListener('mousedown', down, false);
                     grabber.addEventListener('touchstart', down, false);
+
+                    scope.$on('$destroy', function() {
+                        grabber.removeEventListener('mousedown', down, false);
+                        grabber.removeEventListener('touchstart', down, false);
+                    });
                 });
             }
         };
