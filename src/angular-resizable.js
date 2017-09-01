@@ -166,6 +166,7 @@ angular.module('angularResizable', [])
                     scope.$on('$destroy', function() {
                         grabber.removeEventListener('mousedown', down, false);
                         grabber.removeEventListener('touchstart', down, false);
+                        grabber.remove();
                     });
                 });
             }
